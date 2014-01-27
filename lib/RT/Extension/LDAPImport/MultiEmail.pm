@@ -90,6 +90,8 @@ sub _import_user {
     for my $id (grep {not $merged{$_}} @{$user->GetMergedUsers->Content}) {
         my $alt = RT::User->new( RT->SystemUser );
         $alt->LoadOriginal( id => $id );
+        my ($effective_id) = $alt->Attributes->Named("EffectiveId");
+        next unless $effective_id->Creator == RT->SystemUser->id;
         $alt->UnMerge;
     }
 
