@@ -19,20 +19,28 @@ sub _import_user {
     my $user = $self->SUPER::_import_user(@_);
     return unless $user;
 
-    my $attrname = RT->Config->Get('LDAPMultiEmail');
-    return unless $attrname;
+    my $secondary_attrs = RT->Config->Get('LDAPMultiEmail');
+    return unless $secondary_attrs;
+    $secondary_attrs = [ $secondary_attrs ] unless ref $secondary_attrs;
 
     $self->{seen}{$user->id}++;
 
     my $ldap = $args{ldap_entry};
     my $uid   = $ldap->get_value('uid');
     my $email = $ldap->get_value('mail');
-    my @secondary = grep {/\S/ and $_ ne $email} $ldap->get_value($attrname);
+
+    my %original_secondary;
+    my @secondary;
+    for my $attr (@{$secondary_attrs}) {
+        $original_secondary{$attr} = [ $ldap->get_value($attr) ];
+        push @secondary, map {[$attr, $_]} grep {/\S/ and $_ ne $email} @{$original_secondary{$attr}};
+    }
     my(@users, @merge);
-    for my $address (@secondary) {
+    for my $val (@secondary) {
+        my ($attrname, $address) = @{$val};
         my ($parsed) = Email::Address->parse($address);
         unless ($parsed) {
-            $self->_debug("Skipping alternate address $address, as it is invalid");
+            $self->_debug("Skipping alternate address $address in $attrname of $email, as it is invalid");
             next;
         }
 
@@ -51,7 +59,7 @@ sub _import_user {
                 my $other = RT::User->new( RT->SystemUser );
                 $other->Load( $effective_id->Content );
                 $self->_warn($user->EmailAddress." lists $address".
-                             " as a secondary, which is already merged into ".
+                             " in $attrname as a secondary, which is already merged into ".
                              $other->EmailAddress
                          );
                 next;
@@ -63,7 +71,7 @@ sub _import_user {
         # values in the remote LDAP store.
         $ldap->replace( uid  => $address );
         $ldap->replace( mail => $address );
-        $ldap->replace( $attrname => [] );
+        $ldap->replace( $_ => [] ) for @{$secondary_attrs};
 
         # Build and import the secondary user
         my $data = $self->_build_user_object( ldap_entry => $ldap );
@@ -99,7 +107,7 @@ sub _import_user {
     # scope shortly without being used again, but better safe than sorry.
     $ldap->replace( uid  => $uid );
     $ldap->replace( mail => $email );
-    $ldap->replace( $attrname => \@secondary );
+    $ldap->replace( $_ => $original_secondary{$_} ) for @{$secondary_attrs};
 
     return $user;
 }
@@ -132,6 +140,11 @@ You will also need to specify which attribute contains "alternate" email
 addresses, via:
 
     Set( $LDAPMultiEmail, 'alternateEmail' );
+
+Multiple alternate email address attributes can be specified using an
+array reference:
+
+    Set( $LDAPMultiEmail, ['alternateEmail', 'homeEmail'] );
 
 =back
 
