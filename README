@@ -9,11 +9,15 @@ INSTALLATION
         May need root permissions
 
     Edit your /opt/rt4/etc/RT_SiteConfig.pm
-        Add this line:
+        If you are using RT 4.2 or greater, add this line:
+
+            Plugin('RT::Extension::LDAPImport::MultiEmail');
+
+        For RT 4.0, add this line:
 
             Set(@Plugins, qw(RT::Extension::LDAPImport::MultiEmail));
 
-        or add "RT::Extension::LDAPImport::MultiEmail" to your existing
+        or add RT::Extension::LDAPImport::MultiEmail to your existing
         @Plugins line.
 
         You will also need to specify which attribute contains "alternate"
@@ -21,11 +25,26 @@ INSTALLATION
 
             Set( $LDAPMultiEmail, 'alternateEmail' );
 
-AUTHOR
-    Alex Vandiver <alexmv@bestpractical.com>
+        Multiple alternate email address attributes can be specified using
+        an array reference:
 
-LICENSE AND COPYRIGHT
-    This software is Copyright (c) 2013 by Best Practical Solutions
+            Set( $LDAPMultiEmail, ['alternateEmail', 'homeEmail'] );
+
+AUTHOR
+    Best Practical Solutions, LLC <modules@bestpractical.com>
+
+BUGS
+    All bugs should be reported via email to
+
+        L<bug-RT-Extension-LDAPImport-MultiEmail@rt.cpan.org|mailto:bug-RT-Extension-LDAPImport-MultiEmail@rt.cpan.org>
+
+    or via the web at
+
+        L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-LDAPImport-MultiEmail>.
+
+COPYRIGHT
+    This extension is Copyright (C) 20013-2014 Best Practical Solutions,
+    LLC.
 
     This is free software, licensed under:
 

@@ -1,13 +1,9 @@
 use inc::Module::Install;
 
 RTx 'RT-Extension-LDAPImport-MultiEmail';
-all_from 'lib/RT/Extension/LDAPImport/MultiEmail.pm';
-readme_from 'lib/RT/Extension/LDAPImport/MultiEmail.pm';
-license  'gplv2';
 
-requires_rt("4.0.0");
-requires "RT::Extension::LDAPImport";
-requires "RT::Extension::MergeUsers";
+requires_rt_plugin "RT::Extension::LDAPImport";
+requires_rt_plugin "RT::Extension::MergeUsers";
 
 require File::Basename;
 substitute(

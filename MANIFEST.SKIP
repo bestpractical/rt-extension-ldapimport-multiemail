@@ -58,4 +58,4 @@
 #!end included /home/chmrr/prog/perlbrew/perls/perl-5.16.0/lib/5.16.0/ExtUtils/MANIFEST.SKIP
 
 t/tmp
-t/user-import.t
+t/user-import.t$

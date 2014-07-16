@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package RT::Extension::LDAPImport::MultiEmail;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 {
     no warnings 'redefine';
@@ -120,17 +120,21 @@ RT-Extension-LDAPImport-MultiEmail - Import users with multiple email addresses 
 
 =over
 
-=item perl Makefile.PL
+=item C<perl Makefile.PL>
 
-=item make
+=item C<make>
 
-=item make install
+=item C<make install>
 
 May need root permissions
 
-=item Edit your /opt/rt4/etc/RT_SiteConfig.pm
+=item Edit your F</opt/rt4/etc/RT_SiteConfig.pm>
 
-Add this line:
+If you are using RT 4.2 or greater, add this line:
+
+    Plugin('RT::Extension::LDAPImport::MultiEmail');
+
+For RT 4.0, add this line:
 
     Set(@Plugins, qw(RT::Extension::LDAPImport::MultiEmail));
 
@@ -150,11 +154,21 @@ array reference:
 
 =head1 AUTHOR
 
-Alex Vandiver <alexmv@bestpractical.com>
+Best Practical Solutions, LLC E<lt>modules@bestpractical.comE<gt>
 
-=head1 LICENSE AND COPYRIGHT
+=head1 BUGS
 
-This software is Copyright (c) 2013 by Best Practical Solutions
+All bugs should be reported via email to
+
+    L<bug-RT-Extension-LDAPImport-MultiEmail@rt.cpan.org|mailto:bug-RT-Extension-LDAPImport-MultiEmail@rt.cpan.org>
+
+or via the web at
+
+    L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-LDAPImport-MultiEmail>.
+
+=head1 COPYRIGHT
+
+This extension is Copyright (C) 20013-2014 Best Practical Solutions, LLC.
 
 This is free software, licensed under:
 
