@@ -73,6 +73,11 @@ sub _import_user {
         $ldap->replace( mail => $address );
         $ldap->replace( $_ => [] ) for @{$secondary_attrs};
 
+        # Even if we were told to "only update", we should be able to
+        # create aliases to merge in.
+        local $RT::LDAPUpdateUsers = $RT::LDAPUpdateOnly;
+        local $RT::LDAPUpdateOnly  = 0;
+
         # Build and import the secondary user
         my $data = $self->_build_user_object( ldap_entry => $ldap );
         $alt = $self->_import_user(
