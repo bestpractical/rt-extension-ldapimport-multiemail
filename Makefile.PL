@@ -2,7 +2,6 @@ use inc::Module::Install;
 
 RTx 'RT-Extension-LDAPImport-MultiEmail';
 
-requires_rt_plugin "RT::Extension::LDAPImport";
 requires_rt_plugin "RT::Extension::MergeUsers";
 
 require File::Basename;

@@ -1,13 +1,13 @@
 use strict;
 use warnings;
-package RT::Extension::LDAPImport::MultiEmail;
+package RT::LDAPImport::MultiEmail;
 
-our $VERSION = '0.04';
+our $VERSION = '0.10';
 
 {
     no warnings 'redefine';
-    require RT::Extension::LDAPImport;
-    package RT::Extension::LDAPImport;
+    require RT::LDAPImport;
+    package RT::LDAPImport;
     sub new { return bless {}, 'RT::Extension::LDAPImport::MultiEmail'; }
 }
 
@@ -40,7 +40,7 @@ sub _import_user {
         my ($attrname, $address) = @{$val};
         my ($parsed) = Email::Address->parse($address);
         unless ($parsed) {
-            $self->_debug("Skipping alternate address $address in $attrname of $email, as it is invalid");
+            $RT::Logger->debug("Skipping alternate address $address in $attrname of $email, as it is invalid");
             next;
         }
 
@@ -58,7 +58,7 @@ sub _import_user {
             if ($effective_id and $user->id != $effective_id->Content) {
                 my $other = RT::User->new( RT->SystemUser );
                 $other->Load( $effective_id->Content );
-                $self->_warn($user->EmailAddress." lists $address".
+                $RT::Logger->warning($user->EmailAddress." lists $address".
                              " in $attrname as a secondary, which is already merged into ".
                              $other->EmailAddress
                          );
@@ -135,15 +135,9 @@ May need root permissions
 
 =item Edit your F</opt/rt4/etc/RT_SiteConfig.pm>
 
-If you are using RT 4.2 or greater, add this line:
+If you are using RT 4.4 or greater, add this line:
 
     Plugin('RT::Extension::LDAPImport::MultiEmail');
-
-For RT 4.0, add this line:
-
-    Set(@Plugins, qw(RT::Extension::LDAPImport::MultiEmail));
-
-or add C<RT::Extension::LDAPImport::MultiEmail> to your existing C<@Plugins> line.
 
 You will also need to specify which attribute contains "alternate" email
 addresses, via:

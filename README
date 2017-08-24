@@ -8,17 +8,9 @@ INSTALLATION
     make install
         May need root permissions
 
-    Edit your /opt/rt4/etc/RT_SiteConfig.pm
-        If you are using RT 4.2 or greater, add this line:
+    Edit your /opt/rt4/etc/RT_SiteConfig.pm and add this line:
 
             Plugin('RT::Extension::LDAPImport::MultiEmail');
-
-        For RT 4.0, add this line:
-
-            Set(@Plugins, qw(RT::Extension::LDAPImport::MultiEmail));
-
-        or add RT::Extension::LDAPImport::MultiEmail to your existing
-        @Plugins line.
 
         You will also need to specify which attribute contains "alternate"
         email addresses, via:
