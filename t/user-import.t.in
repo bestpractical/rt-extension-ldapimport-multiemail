@@ -5,7 +5,7 @@ use lib qw(/opt/rt4/local/lib /opt/rt4/lib);
 
 use RT::Test
     testing => 'RT::Extension::LDAPImport::MultiEmail',
-    requires => ['RT::Extension::LDAPImport', 'RT::Extension::MergeUsers'],
+    requires => ['RT::LDAPImport', 'RT::Extension::MergeUsers'],
     tests => undef;
 eval { require Net::LDAP::Server::Test; 1; } or do {
     plan skip_all => 'Unable to test without Net::Server::LDAP::Test';
@@ -28,7 +28,7 @@ for my $cfname (qw/SomeCF/) {
 }
 
 my $importer = RT::Extension::LDAPImport->new;
-isa_ok($importer,'RT::Extension::LDAPImport');
+isa_ok($importer,'RT::LDAPImport');
 isa_ok($importer,'RT::Extension::LDAPImport::MultiEmail');
 $importer->screendebug(1) if ($ENV{TEST_VERBOSE});
 
